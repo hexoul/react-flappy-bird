@@ -1,18 +1,23 @@
 import { useEffect, useMemo, useRef } from "react";
 import * as Phaser from "phaser";
 
-import { Game } from "./Game";
+import { Game } from "./scene/Game";
 
 const App = () => {
   const game = useRef(null);
 
   const phaserConfig = useMemo(
     () => ({
-      type: Phaser.WEBGL,
-      width: 960,
-      height: 720,
-      backgroundColor: "#25304A",
+      type: Phaser.AUTO,
+      width: 288,
+      height: 512,
       parent: "phaser",
+      input: { keyboard: true },
+      physics: {
+        default: "arcade",
+        arcade: { gravity: { y: 300 } },
+      },
+      render: { pixelArt: true },
       scene: Game,
     }),
     []
