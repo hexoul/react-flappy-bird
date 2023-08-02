@@ -201,7 +201,7 @@ class Game extends Phaser.Scene {
       this._startGame();
     }
 
-    this.player.setVelocityY(-400);
+    this.player.setVelocityY(-300);
     this.player.angle = -20;
     this.framesMoveUp = 10;
   }
