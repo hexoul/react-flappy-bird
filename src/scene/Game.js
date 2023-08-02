@@ -122,7 +122,7 @@ class Game extends Phaser.Scene {
     });
 
     this.nextPipes++;
-    if (this.nextPipes === 150) {
+    if (this.nextPipes === 130) {
       this._makePipes();
       this.nextPipes = 0;
     }
@@ -201,9 +201,9 @@ class Game extends Phaser.Scene {
       this._startGame();
     }
 
-    this.player.setVelocityY(-250);
+    this.player.setVelocityY(-270);
     this.player.angle = -20;
-    this.framesMoveUp = 10;
+    this.framesMoveUp = 8;
   }
 
   _hitBird() {
