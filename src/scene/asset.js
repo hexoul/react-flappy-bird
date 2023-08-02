@@ -1,64 +1,91 @@
 export const assets = {
+  bird: "bird",
+  obstacle: {
+    pipe: {
+      green: {
+        top: "pipe-green-top",
+        bottom: "pipe-green-bottom",
+      },
+      red: {
+        top: "pipe-red-top",
+        bottom: "pipe-red-bo",
+      },
+    },
+  },
+  scene: {
+    width: 144,
+    background: {
+      day: "background-day",
+      night: "background-night",
+    },
+    ground: "ground",
+    gameOver: "game-over",
+    restart: "restart-button",
+    messageInitial: "message-initial",
+  },
+  scoreboard: {
+    width: 25,
+    base: "number",
+    number0: "number0",
+    number1: "number1",
+    number2: "number2",
+    number3: "number3",
+    number4: "number4",
+    number5: "number5",
+    number6: "number6",
+    number7: "number7",
+    number8: "number8",
+    number9: "number9",
+  },
+  animation: {
     bird: {
-        red: 'bird-red',
-        yellow: 'bird-yellow',
-        blue: 'bird-blue'
+      clapWings: "clap-wings",
+      stop: "stop",
     },
-    obstacle: {
-        pipe: {
-            green: {
-                top: 'pipe-green-top',
-                bottom: 'pipe-green-bottom'
-            },
-            red: {
-                top: 'pipe-red-top',
-                bottom: 'pipe-red-bo'
-            }
-        }
+    ground: {
+      moving: "moving-ground",
+      stop: "stop-ground",
     },
-    scene: {
-        width: 144,
-        background: {
-            day: 'background-day',
-            night: 'background-night'
-        },
-        ground: 'ground',
-        gameOver: 'game-over',
-        restart: 'restart-button',
-        messageInitial: 'message-initial'
-    },
-    scoreboard: {
-        width: 25,
-        base: 'number',
-        number0: 'number0',
-        number1: 'number1',
-        number2: 'number2',
-        number3: 'number3',
-        number4: 'number4',
-        number5: 'number5',
-        number6: 'number6',
-        number7: 'number7',
-        number8: 'number8',
-        number9: 'number9'
-    },
-    animation: {
-        bird: {
-            red: {
-                clapWings: 'red-clap-wings',
-                stop: 'red-stop'
-            },
-            blue: {
-                clapWings: 'blue-clap-wings',
-                stop: 'blue-stop'
-            },
-            yellow: {
-                clapWings: 'yellow-clap-wings',
-                stop: 'yellow-stop'
-            }
-        },
-        ground: {
-            moving: 'moving-ground',
-            stop: 'stop-ground'
-        }
-    }
+  },
+};
+
+export const preload = (load) => {
+  // Backgrounds and ground
+  load.image(assets.scene.background.day, "background-day.png");
+  load.image(assets.scene.background.night, "background-night.png");
+  load.spritesheet(assets.scene.ground, "ground-sprite.png", {
+    frameWidth: 336,
+    frameHeight: 112,
+  });
+
+  // Pipes
+  load.image(assets.obstacle.pipe.green.top, "pipe-green-top.png");
+  load.image(assets.obstacle.pipe.green.bottom, "pipe-green-bottom.png");
+  load.image(assets.obstacle.pipe.red.top, "pipe-red-top.png");
+  load.image(assets.obstacle.pipe.red.bottom, "pipe-red-bottom.png");
+
+  // Start game
+  load.image(assets.scene.messageInitial, "message-initial.png");
+
+  // End game
+  load.image(assets.scene.gameOver, "gameover.png");
+  load.image(assets.scene.restart, "restart-button.png");
+
+  // Bird
+  load.spritesheet(assets.bird, "bird-sprite.png", {
+    frameWidth: 34,
+    frameHeight: 24,
+  });
+
+  // Numbers
+  load.image(assets.scoreboard.number0, "number0.png");
+  load.image(assets.scoreboard.number1, "number1.png");
+  load.image(assets.scoreboard.number2, "number2.png");
+  load.image(assets.scoreboard.number3, "number3.png");
+  load.image(assets.scoreboard.number4, "number4.png");
+  load.image(assets.scoreboard.number5, "number5.png");
+  load.image(assets.scoreboard.number6, "number6.png");
+  load.image(assets.scoreboard.number7, "number7.png");
+  load.image(assets.scoreboard.number8, "number8.png");
+  load.image(assets.scoreboard.number9, "number9.png");
 };
