@@ -105,7 +105,7 @@ class Game extends Phaser.Scene {
     } else if (Phaser.Input.Keyboard.JustDown(this.upButton)) {
       this._moveBird();
     } else {
-      this.player.setVelocityY(150);
+      this.player.setVelocityY(200);
       if (this.player.angle < 90) this.player.angle += 1;
     }
 
@@ -122,7 +122,7 @@ class Game extends Phaser.Scene {
     });
 
     this.nextPipes++;
-    if (this.nextPipes === 200) {
+    if (this.nextPipes === 150) {
       this._makePipes();
       this.nextPipes = 0;
     }
@@ -201,7 +201,7 @@ class Game extends Phaser.Scene {
       this._startGame();
     }
 
-    this.player.setVelocityY(-300);
+    this.player.setVelocityY(-250);
     this.player.angle = -20;
     this.framesMoveUp = 10;
   }
