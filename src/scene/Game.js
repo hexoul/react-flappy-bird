@@ -219,8 +219,6 @@ class Game extends Phaser.Scene {
     this.restartButton.visible = true;
   }
 
-  _updateScore() {}
-
   _makePipes() {
     if (!this.gameStarted || this.gameOver) return;
 
@@ -241,6 +239,46 @@ class Game extends Phaser.Scene {
       this.currentPipe.bottom
     );
     pipeBottom.body.allowGravity = false;
+  }
+
+  _updateScore(_, gap) {
+    this.score++;
+    gap.destroy();
+
+    if (this.score % 10 === 0) {
+      this.backgroundDay.visible = !this.backgroundDay.visible;
+      this.backgroundNight.visible = !this.backgroundNight.visible;
+
+      if (this.currentPipe === assets.obstacle.pipe.green) {
+        this.currentPipe = assets.obstacle.pipe.red;
+      } else {
+        this.currentPipe = assets.obstacle.pipe.green;
+      }
+    }
+
+    this._updateScoreboard();
+  }
+
+  _updateScoreboard() {
+    this.scoreboardGroup.clear(true, true);
+
+    const scoreStr = this.score.toString();
+    if (scoreStr.length === 1) {
+      this.scoreboardGroup
+        .create(assets.scene.width, 30, assets.scoreboard.base + this.score)
+        .setDepth(10);
+      return;
+    }
+
+    let initialPosition =
+      assets.scene.width - (scoreStr.length * assets.scoreboard.width) / 2;
+
+    for (const score of scoreStr) {
+      this.scoreboardGroup
+        .create(initialPosition, 30, assets.scoreboard.base + score)
+        .setDepth(10);
+      initialPosition += assets.scoreboard.width;
+    }
   }
 }
 
