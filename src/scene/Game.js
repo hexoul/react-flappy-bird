@@ -12,15 +12,16 @@ class Game extends Phaser.Scene {
   }
 
   create() {
+    const moveBird = this._moveBird.bind(this);
     this.backgroundDay = this.add
       .image(assets.scene.width, 256, assets.scene.background.day)
       .setInteractive();
-    this.backgroundDay.on("pointerdown", this._moveBird.bind(this));
+    this.backgroundDay.on("pointerdown", moveBird);
     this.backgroundNight = this.add
       .image(assets.scene.width, 256, assets.scene.background.night)
       .setInteractive();
     this.backgroundNight.visible = false;
-    this.backgroundNight.on("pointerdown", this._moveBird.bind(this));
+    this.backgroundNight.on("pointerdown", moveBird);
 
     this.gapsGroup = this.physics.add.group();
     this.pipesGroup = this.physics.add.group();
@@ -97,7 +98,34 @@ class Game extends Phaser.Scene {
   }
 
   update(time, delta) {
-    return;
+    if (this.gameOver || !this.gameStarted) return;
+
+    if (this.framesMoveUp > 0) {
+      this.framesMoveUp--;
+    } else if (Phaser.Input.Keyboard.JustDown(this.upButton)) {
+      this._moveBird();
+    } else {
+      this.player.setVelocityY(150);
+      if (this.player.angle < 90) this.player.angle += 1;
+    }
+
+    const pipeVelocityX = -140;
+    this.pipesGroup.children.iterate((child) => {
+      if (child === undefined) return;
+
+      if (child.x < -50) child.destroy();
+      else child.setVelocityX(pipeVelocityX);
+    });
+
+    this.gapsGroup.children.iterate((child) => {
+      child.body.setVelocityX(pipeVelocityX);
+    });
+
+    this.nextPipes++;
+    if (this.nextPipes === 200) {
+      this._makePipes();
+      this.nextPipes = 0;
+    }
   }
 
   _prepareGame() {
@@ -115,27 +143,25 @@ class Game extends Phaser.Scene {
     this.player.anims.play(assets.animation.bird.clapWings, true);
     this.player.body.allowGravity = false;
 
+    const hitBird = this._hitBird.bind(this);
     this.scene.scene.physics.add.collider(
       this.player,
       this.ground,
-      this._hitBird.bind(this),
-      null,
-      this.scene
+      hitBird,
+      null
     );
     this.scene.scene.physics.add.collider(
       this.player,
       this.pipesGroup,
-      this._hitBird.bind(this),
-      null,
-      this.scene
+      hitBird,
+      null
     );
 
     this.scene.scene.physics.add.overlap(
       this.player,
       this.gapsGroup,
       this._updateScore.bind(this),
-      null,
-      this.scene
+      null
     );
 
     this.ground.anims.play(assets.animation.ground.moving, true);
@@ -155,23 +181,43 @@ class Game extends Phaser.Scene {
     this._makePipes();
   }
 
-  _restartGame() {}
+  _restartGame() {
+    this.pipesGroup.clear(true, true);
+    this.gapsGroup.clear(true, true);
+    this.scoreboardGroup.clear(true, true);
+    this.player.destroy();
+    this.gameOverBanner.visible = false;
+    this.restartButton.visible = false;
+
+    this._prepareGame();
+
+    this.scene.scene.physics.resume();
+  }
 
   _moveBird() {
-    if (this.gameOver) {
-      return;
-    }
+    if (this.gameOver) return;
 
     if (!this.gameStarted) {
       this._startGame();
     }
 
     this.player.setVelocityY(-400);
-    this.player.angle = -15;
-    this.framesMoveUp = 5;
+    this.player.angle = -20;
+    this.framesMoveUp = 10;
   }
 
-  _hitBird() {}
+  _hitBird() {
+    this.scene.scene.physics.pause();
+
+    this.gameOver = true;
+    this.gameStarted = false;
+
+    this.player.anims.play(assets.animation.bird.stop);
+    this.ground.anims.play(assets.animation.ground.stop);
+
+    this.gameOverBanner.visible = true;
+    this.restartButton.visible = true;
+  }
 
   _updateScore() {}
 
@@ -180,16 +226,17 @@ class Game extends Phaser.Scene {
 
     const pipeTopY = Phaser.Math.Between(-120, 120);
 
-    const gap = this.scene.scene.add.line(288, pipeTopY + 210, 0, 0, 0, 98);
+    const x = 288;
+    const gap = this.scene.scene.add.line(x, pipeTopY + 210, 0, 0, 0, 98);
     this.gapsGroup.add(gap);
     gap.body.allowGravity = false;
     gap.visible = false;
 
-    const pipeTop = this.pipesGroup.create(288, pipeTopY, this.currentPipe.top);
+    const pipeTop = this.pipesGroup.create(x, pipeTopY, this.currentPipe.top);
     pipeTop.body.allowGravity = false;
 
     const pipeBottom = this.pipesGroup.create(
-      288,
+      x,
       pipeTopY + 420,
       this.currentPipe.bottom
     );
