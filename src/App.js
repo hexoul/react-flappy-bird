@@ -1,4 +1,4 @@
-import { gql, ApolloClient } from "@apollo/client";
+import { gql, ApolloClient, InMemoryCache } from "@apollo/client";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useCookies } from "react-cookie";
 import * as Phaser from "phaser";
@@ -7,7 +7,7 @@ import { Game } from "./scene/Game";
 
 const query = gql`
   query QueryExistUnreadNotification {
-    exist: existUnreadNotification
+    existUnreadNotification
   }
 `;
 
@@ -26,6 +26,7 @@ const App = () => {
       const client = new ApolloClient({
         uri: "https://gateway.kinolights.com/graphql",
         headers: { Authorization: `Bearer ${cookies.KL_AES}` },
+        cache: new InMemoryCache(),
       });
 
       // client.mutate({ mutation, variables: { game: '', score } });
