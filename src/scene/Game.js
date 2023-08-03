@@ -6,8 +6,9 @@ class Game extends Phaser.Scene {
   upSpeed = 160;
   downSpeed = 170;
 
-  constructor() {
+  constructor(onGameOver) {
     super({ key: "FlappyBirdScene" });
+    this.onGameOver = onGameOver;
   }
 
   preload() {
@@ -220,6 +221,8 @@ class Game extends Phaser.Scene {
 
     this.gameOverBanner.visible = true;
     this.restartButton.visible = true;
+
+    this.onGameOver(this.score);
   }
 
   _makePipes() {

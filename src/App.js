@@ -1,10 +1,16 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCookies } from "react-cookie";
 import * as Phaser from "phaser";
 
 import { Game } from "./scene/Game";
 
 const App = () => {
+  const [cookies] = useCookies(["KL_AES"]);
   const game = useRef(null);
+
+  const onGameOver = useCallback((score) => {
+    console.log(`ok ${score} ${cookies.KL_AES}`);
+  }, [cookies.KL_AES]);
 
   const fps = 30;
   const phaserConfig = useMemo(
@@ -20,9 +26,9 @@ const App = () => {
       },
       render: { pixelArt: true },
       fps: { min: fps, target: fps, limit: fps },
-      scene: Game,
+      scene: new Game(onGameOver),
     }),
-    []
+    [onGameOver]
   );
 
   useEffect(() => {
