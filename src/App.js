@@ -5,12 +5,6 @@ import * as Phaser from "phaser";
 
 import { Game } from "./scene/Game";
 
-const query = gql`
-  query QueryExistUnreadNotification {
-    existUnreadNotification
-  }
-`;
-
 const mutation = gql`
   mutation AddGameScore($game: Game!, $score: Int!) {
     addGameScore(game: $game, score: $score)
@@ -23,14 +17,15 @@ const App = () => {
 
   const onGameOver = useCallback(
     (score) => {
+      if (!cookies.KL_AES) return;
+
       const client = new ApolloClient({
         uri: "https://gateway.kinolights.com/graphql",
         headers: { Authorization: `Bearer ${cookies.KL_AES}` },
         cache: new InMemoryCache(),
       });
 
-      // client.mutate({ mutation, variables: { game: '', score } });
-      client.query({ query }).then((result) => console.log(result));
+      client.mutate({ mutation, variables: { game: '', score } });
     },
     [cookies.KL_AES]
   );
