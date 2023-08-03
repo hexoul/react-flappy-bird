@@ -6,6 +6,7 @@ import { Game } from "./scene/Game";
 const App = () => {
   const game = useRef(null);
 
+  const fps = 120;
   const phaserConfig = useMemo(
     () => ({
       type: Phaser.AUTO,
@@ -18,6 +19,7 @@ const App = () => {
         arcade: { gravity: { y: 300 } },
       },
       render: { pixelArt: true },
+      fps: { min: fps, target: fps, limit: fps },
       scene: Game,
     }),
     []
