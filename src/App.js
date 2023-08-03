@@ -1,28 +1,19 @@
-import { gql, ApolloClient, InMemoryCache } from "@apollo/client";
+import { gql, ApolloClient } from "@apollo/client";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useCookies } from "react-cookie";
 import * as Phaser from "phaser";
 
 import { Game } from "./scene/Game";
 
-const client = new ApolloClient({
-  uri: "https://gateway.kinolights.com/",
-  cache: new InMemoryCache(),
-});
-
 const query = gql`
-  query QueryAllReviews(
-    $limit: Int!
-    $orderBy: AllReviewsOrderType!
-    $orderOption: OrderOptionType!
-  ) {
-    allReviews(limit: $limit, orderBy: $orderBy, orderOption: $orderOption) {
-      id
-      createdAt
-      movieId
-      userId
-      reviewTitle
-    }
+  query QueryExistUnreadNotification {
+    exist: existUnreadNotification
+  }
+`;
+
+const mutation = gql`
+  mutation AddGameScore($game: Game!, $score: Int!) {
+    addGameScore(game: $game, score: $score)
   }
 `;
 
@@ -32,13 +23,13 @@ const App = () => {
 
   const onGameOver = useCallback(
     (score) => {
-      client
-        .query({
-          query,
-          variables: { limit: 2, orderBy: "CREATED_AT", orderOption: "ASC" },
-        })
-        .then((result) => console.log(result));
-      console.log(`ok ${score} ${cookies.KL_AES}`);
+      const client = new ApolloClient({
+        uri: "https://gateway.kinolights.com/graphql",
+        headers: { Authorization: `Bearer ${cookies.KL_AES}` },
+      });
+
+      // client.mutate({ mutation, variables: { game: '', score } });
+      client.query({ query }).then((result) => console.log(result));
     },
     [cookies.KL_AES]
   );
