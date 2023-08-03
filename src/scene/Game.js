@@ -3,6 +3,9 @@ import * as Phaser from "phaser";
 import { assets, preload } from "./asset";
 
 class Game extends Phaser.Scene {
+  upSpeed = 160;
+  downSpeed = 170;
+
   constructor() {
     super({ key: "FlappyBirdScene" });
   }
@@ -105,7 +108,7 @@ class Game extends Phaser.Scene {
     } else if (Phaser.Input.Keyboard.JustDown(this.upButton)) {
       this._moveBird();
     } else {
-      this.player.setVelocityY(200);
+      this.player.setVelocityY(this.downSpeed);
       if (this.player.angle < 90) this.player.angle += 1;
     }
 
@@ -122,7 +125,7 @@ class Game extends Phaser.Scene {
     });
 
     this.nextPipes++;
-    if (this.nextPipes === 130) {
+    if (this.nextPipes === 50) {
       this._makePipes();
       this.nextPipes = 0;
     }
@@ -201,9 +204,9 @@ class Game extends Phaser.Scene {
       this._startGame();
     }
 
-    this.player.setVelocityY(-270);
+    this.player.setVelocityY(-this.upSpeed);
     this.player.angle = -20;
-    this.framesMoveUp = 8;
+    this.framesMoveUp = 5;
   }
 
   _hitBird() {

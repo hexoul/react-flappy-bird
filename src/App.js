@@ -6,7 +6,7 @@ import { Game } from "./scene/Game";
 const App = () => {
   const game = useRef(null);
 
-  const fps = 120;
+  const fps = 30;
   const phaserConfig = useMemo(
     () => ({
       type: Phaser.AUTO,
