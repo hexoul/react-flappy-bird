@@ -5,6 +5,7 @@ import { assets, preload } from "./asset";
 class Game extends Phaser.Scene {
   upSpeed = 160;
   downSpeed = 170;
+  scorePt = 42; // Score board padding top
 
   constructor(onGameOver) {
     super({ key: "FlappyBirdScene" });
@@ -41,7 +42,7 @@ class Game extends Phaser.Scene {
 
     this.messageInitial = this.add.image(
       assets.scene.width,
-      156,
+      184,
       assets.scene.messageInitial
     );
     this.messageInitial.setDepth(30);
@@ -87,18 +88,26 @@ class Game extends Phaser.Scene {
 
     this.gameOverBanner = this.add.image(
       assets.scene.width,
-      206,
+      180,
       assets.scene.gameOver
     );
     this.gameOverBanner.setDepth(20);
     this.gameOverBanner.visible = false;
 
     this.restartButton = this.add
-      .image(assets.scene.width, 300, assets.scene.restart)
+      .image(assets.scene.width, 250, assets.scene.restart)
       .setInteractive();
     this.restartButton.on("pointerdown", this._restartGame.bind(this));
     this.restartButton.setDepth(20);
     this.restartButton.visible = false;
+
+    this.guideText = this.add.image(
+      assets.scene.width,
+      460,
+      assets.scene.guide
+    );
+    this.guideText.setDepth(20);
+    this.guideText.visible = false;
   }
 
   update(time, delta) {
@@ -177,7 +186,7 @@ class Game extends Phaser.Scene {
 
     const score0 = this.scoreboardGroup.create(
       assets.scene.width,
-      30,
+      this.scorePt,
       assets.scoreboard.number0
     );
     score0.setDepth(20);
@@ -192,6 +201,7 @@ class Game extends Phaser.Scene {
     this.player.destroy();
     this.gameOverBanner.visible = false;
     this.restartButton.visible = false;
+    this.guideText.visible = false;
 
     this._prepareGame();
 
@@ -221,6 +231,7 @@ class Game extends Phaser.Scene {
 
     this.gameOverBanner.visible = true;
     this.restartButton.visible = true;
+    this.guideText.visible = true;
 
     this.onGameOver(this.score);
   }
@@ -271,7 +282,11 @@ class Game extends Phaser.Scene {
     const scoreStr = this.score.toString();
     if (scoreStr.length === 1) {
       this.scoreboardGroup
-        .create(assets.scene.width, 30, assets.scoreboard.base + this.score)
+        .create(
+          assets.scene.width,
+          this.scorePt,
+          assets.scoreboard.base + this.score
+        )
         .setDepth(10);
       return;
     }
@@ -281,7 +296,7 @@ class Game extends Phaser.Scene {
 
     for (const score of scoreStr) {
       this.scoreboardGroup
-        .create(initialPosition, 30, assets.scoreboard.base + score)
+        .create(initialPosition, this.scorePt, assets.scoreboard.base + score)
         .setDepth(10);
       initialPosition += assets.scoreboard.width;
     }

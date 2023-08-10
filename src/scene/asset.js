@@ -20,6 +20,7 @@ export const assets = {
     },
     ground: "ground",
     gameOver: "game-over",
+    guide: "guide-text",
     restart: "restart-button",
     messageInitial: "message-initial",
   },
@@ -69,6 +70,7 @@ export const preload = (load) => {
 
   // End game
   load.image(assets.scene.gameOver, "gameover.png");
+  load.image(assets.scene.guide, "guide-text.png");
   load.image(assets.scene.restart, "restart-button.png");
 
   // Bird
