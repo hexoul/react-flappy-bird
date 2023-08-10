@@ -25,7 +25,7 @@ const App = () => {
         cache: new InMemoryCache(),
       });
 
-      client.mutate({ mutation, variables: { game: '', score } });
+      client.mutate({ mutation, variables: { game: 'FLAPPY_BIRD', score } });
     },
     [cookies.KL_AES]
   );
