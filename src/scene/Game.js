@@ -7,12 +7,30 @@ class Game extends Phaser.Scene {
   downSpeed = 170;
   scorePt = 42; // Score board padding top
 
-  constructor(onGameOver) {
+  constructor(onGameOver, isLoggedIn) {
     super({ key: "FlappyBirdScene" });
     this.onGameOver = onGameOver;
+    this.isLoggedIn = isLoggedIn;
   }
 
   preload() {
+    const progressBar = this.add.graphics();
+    const progressBox = this.add.graphics();
+
+    progressBox.fillStyle(0xbbbbbb, 0.8);
+    progressBox.fillRoundedRect(40, 200, 210, 30, 5);
+
+    this.load.on("progress", (value) => {
+      progressBar.clear();
+      progressBar.fillStyle(0xffffff);
+      progressBar.fillRoundedRect(50, 205, 20 * value, 25, 5);
+    });
+
+    this.load.on('complete',  function  ()  {
+      progressBar.destroy();
+      progressBox.destroy();
+    });
+
     preload(this.load);
   }
 
@@ -231,7 +249,7 @@ class Game extends Phaser.Scene {
 
     this.gameOverBanner.visible = true;
     this.restartButton.visible = true;
-    this.guideText.visible = true;
+    if (!this.isLoggedIn) this.guideText.visible = true;
 
     this.onGameOver(this.score);
   }

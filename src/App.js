@@ -25,10 +25,12 @@ const App = () => {
         cache: new InMemoryCache(),
       });
 
-      client.mutate({ mutation, variables: { game: 'FLAPPY_BIRD', score } });
+      client.mutate({ mutation, variables: { game: "FLAPPY_BIRD", score } });
     },
     [cookies.KL_AES]
   );
+
+  const isLoggedIn = !!cookies.KL_AES;
 
   const fps = 30;
   const phaserConfig = useMemo(
@@ -44,9 +46,9 @@ const App = () => {
       },
       render: { pixelArt: true },
       fps: { min: fps, target: fps, limit: fps },
-      scene: new Game(onGameOver),
+      scene: new Game(onGameOver, isLoggedIn),
     }),
-    [onGameOver]
+    [onGameOver, isLoggedIn]
   );
 
   useEffect(() => {
