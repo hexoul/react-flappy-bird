@@ -20,13 +20,13 @@ class Game extends Phaser.Scene {
     progressBox.fillStyle(0xbbbbbb, 0.8);
     progressBox.fillRoundedRect(40, 200, 210, 30, 5);
 
-    this.load.on("progress", (value) => {
+    this.load.on("progress", (v) => {
       progressBar.clear();
       progressBar.fillStyle(0xffffff);
-      progressBar.fillRoundedRect(50, 205, 20 * value, 25, 5);
+      progressBar.fillRoundedRect(50, 205, 20 * v, 25, 5);
     });
 
-    this.load.on('complete',  function  ()  {
+    this.load.on("complete", () => {
       progressBar.destroy();
       progressBox.destroy();
     });
