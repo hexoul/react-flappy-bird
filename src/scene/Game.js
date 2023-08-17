@@ -277,6 +277,8 @@ class Game extends Phaser.Scene {
   }
 
   _updateScore(_, gap) {
+    if (!this.gameStarted || this.gameOver) return;
+
     this.score++;
     gap.destroy();
 
