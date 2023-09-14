@@ -1,4 +1,5 @@
 import { gql, ApolloClient, InMemoryCache } from "@apollo/client";
+import axios from "axios";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useCookies } from "react-cookie";
 import * as Phaser from "phaser";
@@ -12,8 +13,38 @@ const mutation = gql`
 `;
 
 const App = () => {
-  const [cookies] = useCookies(["KL_AES"]);
+  const [cookies] = useCookies(["KL_AES", "_klid"]);
   const game = useRef(null);
+
+  const onGameStart = useCallback(() => {
+    if (!cookies.KL_AES) return;
+
+    axios.post(
+      "https://log.kinolights.com/log/activity",
+      {
+        action: "start",
+        target: "game",
+        stage: "start-flappybird",
+        klid: cookies._klid,
+      },
+      { headers: { Authorization: `Bearer ${cookies.KL_AES}` } }
+    );
+  }, [cookies.KL_AES, cookies._klid]);
+
+  const ping = useCallback(() => {
+    if (!cookies.KL_AES) return;
+
+    axios.post(
+      "https://log.kinolights.com/log/activity",
+      {
+        action: "ping",
+        target: "game",
+        stage: "ping-flappybird",
+        klid: cookies._klid,
+      },
+      { headers: { Authorization: `Bearer ${cookies.KL_AES}` } }
+    );
+  }, [cookies.KL_AES, cookies._klid]);
 
   const onGameOver = useCallback(
     (score) => {
@@ -26,8 +57,19 @@ const App = () => {
       });
 
       client.mutate({ mutation, variables: { game: "FLAPPY_BIRD", score } });
+
+      axios.post(
+        "https://log.kinolights.com/log/activity",
+        {
+          action: "end",
+          target: "game",
+          stage: "end-flappybird",
+          klid: cookies._klid,
+        },
+        { headers: { Authorization: `Bearer ${cookies.KL_AES}` } }
+      );
     },
-    [cookies.KL_AES]
+    [cookies.KL_AES, cookies._klid]
   );
 
   const isLoggedIn = !!cookies.KL_AES;
@@ -46,9 +88,9 @@ const App = () => {
       },
       render: { pixelArt: true },
       fps: { min: fps, target: fps, limit: fps },
-      scene: new Game(onGameOver, isLoggedIn),
+      scene: new Game(onGameStart, ping, onGameOver, isLoggedIn),
     }),
-    [onGameOver, isLoggedIn]
+    [onGameStart, ping, onGameOver, isLoggedIn]
   );
 
   useEffect(() => {

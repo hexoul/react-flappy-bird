@@ -7,8 +7,10 @@ class Game extends Phaser.Scene {
   downSpeed = 170;
   scorePt = 42; // Score board padding top
 
-  constructor(onGameOver, isLoggedIn) {
+  constructor(onGameStart, ping, onGameOver, isLoggedIn) {
     super({ key: "FlappyBirdScene" });
+    this.onGameStart = onGameStart;
+    this.ping = ping;
     this.onGameOver = onGameOver;
     this.isLoggedIn = isLoggedIn;
   }
@@ -210,6 +212,7 @@ class Game extends Phaser.Scene {
     score0.setDepth(20);
 
     this._makePipes();
+    this.onGameStart();
   }
 
   _restartGame() {
@@ -291,6 +294,8 @@ class Game extends Phaser.Scene {
       } else {
         this.currentPipe = assets.obstacle.pipe.green;
       }
+
+      this.ping();
     }
 
     this._updateScoreboard();
