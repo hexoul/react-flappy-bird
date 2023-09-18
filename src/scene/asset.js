@@ -48,6 +48,13 @@ export const assets = {
       stop: "stop-ground",
     },
   },
+  audio: {
+    flap: "flap",
+    groundHit: "ground-hit",
+    pipeHit: "pipe-hit",
+    ouch: "ouch",
+    score: "score",
+  },
 };
 
 export const preload = (load) => {
@@ -90,4 +97,11 @@ export const preload = (load) => {
   load.image(assets.scoreboard.number7, "number7.png");
   load.image(assets.scoreboard.number8, "number8.png");
   load.image(assets.scoreboard.number9, "number9.png");
+
+  // Audio
+  load.audio(assets.audio.flap, "flap.wav");
+  load.audio(assets.audio.groundHit, "ground-hit.wav");
+  load.audio(assets.audio.pipeHit, "pipe-hit.wav");
+  load.audio(assets.audio.ouch, "ouch.wav");
+  load.audio(assets.audio.score, "score.wav");
 };

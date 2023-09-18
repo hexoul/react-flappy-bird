@@ -181,13 +181,13 @@ class Game extends Phaser.Scene {
       this.player,
       this.ground,
       hitBird,
-      null
+      () => this.scene.scene.sound.play(assets.audio.groundHit),
     );
     this.scene.scene.physics.add.collider(
       this.player,
       this.pipesGroup,
       hitBird,
-      null
+      () => this.scene.scene.sound.play(assets.audio.pipeHit),
     );
 
     this.scene.scene.physics.add.overlap(
@@ -239,10 +239,12 @@ class Game extends Phaser.Scene {
     this.player.setVelocityY(-this.upSpeed);
     this.player.angle = -20;
     this.framesMoveUp = 5;
+    this.scene.scene.sound.play(assets.audio.flap);
   }
 
   _hitBird() {
     this.scene.scene.physics.pause();
+    this.scene.scene.sound.play(assets.audio.ouch);
 
     this.gameOver = true;
     this.gameStarted = false;
@@ -284,6 +286,7 @@ class Game extends Phaser.Scene {
 
     this.score++;
     gap.destroy();
+    this.scene.scene.sound.play(assets.audio.score);
 
     if (this.score % 10 === 0) {
       this.backgroundDay.visible = !this.backgroundDay.visible;
