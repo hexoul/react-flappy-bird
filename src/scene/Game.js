@@ -13,6 +13,7 @@ class Game extends Phaser.Scene {
     this.ping = ping;
     this.onGameOver = onGameOver;
     this.isLoggedIn = isLoggedIn;
+    this.isMuted = false;
   }
 
   preload() {
@@ -117,8 +118,8 @@ class Game extends Phaser.Scene {
     this.restartButton = this.add
       .image(assets.scene.width, 250, assets.scene.restart)
       .setInteractive();
-    this.restartButton.on("pointerdown", this._restartGame.bind(this));
     this.restartButton.setDepth(20);
+    this.restartButton.on("pointerdown", this._restartGame.bind(this));
     this.restartButton.visible = false;
 
     this.guideText = this.add.image(
@@ -128,6 +129,19 @@ class Game extends Phaser.Scene {
     );
     this.guideText.setDepth(20);
     this.guideText.visible = false;
+
+    this.volumeButton = this.add
+      .image(assets.scene.width * 1.82, 25, assets.scene.volume)
+      .setInteractive();
+    this.volumeButton.setDepth(20);
+    this.volumeButton.on("pointerdown", this._turnOffSound.bind(this));
+
+    this.volumeMuteButton = this.add
+      .image(assets.scene.width * 1.82, 25, assets.scene.volumeMute)
+      .setInteractive();
+    this.volumeMuteButton.setDepth(20);
+    this.volumeMuteButton.on("pointerdown", this._turnOnSound.bind(this));
+    this.volumeMuteButton.visible = false;
   }
 
   update(time, delta) {
@@ -181,13 +195,13 @@ class Game extends Phaser.Scene {
       this.player,
       this.ground,
       hitBird,
-      () => this.scene.scene.sound.play(assets.audio.groundHit),
+      this._playSound.bind(this, assets.audio.groundHit)
     );
     this.scene.scene.physics.add.collider(
       this.player,
       this.pipesGroup,
       hitBird,
-      () => this.scene.scene.sound.play(assets.audio.pipeHit),
+      this._playSound.bind(this, assets.audio.pipeHit)
     );
 
     this.scene.scene.physics.add.overlap(
@@ -239,12 +253,12 @@ class Game extends Phaser.Scene {
     this.player.setVelocityY(-this.upSpeed);
     this.player.angle = -20;
     this.framesMoveUp = 5;
-    this.scene.scene.sound.play(assets.audio.flap);
+    this._playSound(assets.audio.flap);
   }
 
   _hitBird() {
     this.scene.scene.physics.pause();
-    this.scene.scene.sound.play(assets.audio.ouch);
+    this._playSound(assets.audio.ouch);
 
     this.gameOver = true;
     this.gameStarted = false;
@@ -286,7 +300,7 @@ class Game extends Phaser.Scene {
 
     this.score++;
     gap.destroy();
-    this.scene.scene.sound.play(assets.audio.score);
+    this._playSound(assets.audio.score);
 
     if (this.score % 10 === 0) {
       this.backgroundDay.visible = !this.backgroundDay.visible;
@@ -328,6 +342,23 @@ class Game extends Phaser.Scene {
         .setDepth(10);
       initialPosition += assets.scoreboard.width;
     }
+  }
+
+  _turnOnSound() {
+    this.isMuted = false;
+    this.volumeButton.visible = true;
+    this.volumeMuteButton.visible = false;
+  }
+
+  _turnOffSound() {
+    this.isMuted = true;
+    this.volumeButton.visible = false;
+    this.volumeMuteButton.visible = true;
+  }
+
+  _playSound(key) {
+    if (this.isMuted) return;
+    this.scene.scene.sound.play(key);
   }
 }
 

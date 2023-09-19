@@ -23,6 +23,8 @@ export const assets = {
     guide: "guide-text",
     restart: "restart-button",
     messageInitial: "message-initial",
+    volume: "volume-button",
+    volumeMute: "volume-mute-button",
   },
   scoreboard: {
     width: 25,
@@ -97,6 +99,10 @@ export const preload = (load) => {
   load.image(assets.scoreboard.number7, "number7.png");
   load.image(assets.scoreboard.number8, "number8.png");
   load.image(assets.scoreboard.number9, "number9.png");
+
+  // Volume button
+  load.image(assets.scene.volume, "volume.png");
+  load.image(assets.scene.volumeMute, "volume-mute.png");
 
   // Audio
   load.audio(assets.audio.flap, "flap.wav");
