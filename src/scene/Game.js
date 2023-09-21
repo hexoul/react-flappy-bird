@@ -13,7 +13,8 @@ class Game extends Phaser.Scene {
     this.ping = ping;
     this.onGameOver = onGameOver;
     this.isLoggedIn = isLoggedIn;
-    this.isMuted = false;
+    this.isSoundEffectMuted = false;
+    this.isBgmMuted = false;
   }
 
   preload() {
@@ -130,18 +131,37 @@ class Game extends Phaser.Scene {
     this.guideText.setDepth(20);
     this.guideText.visible = false;
 
-    this.volumeButton = this.add
-      .image(assets.scene.width * 1.82, 25, assets.scene.volume)
+    const soundEffectButtonX = assets.scene.width * 1.82;
+    this.soundEffectButton = this.add
+      .image(soundEffectButtonX, 25, assets.scene.volume)
       .setInteractive();
-    this.volumeButton.setDepth(20);
-    this.volumeButton.on("pointerdown", this._turnOffSound.bind(this));
+    this.soundEffectButton.setDepth(20);
+    this.soundEffectButton.on("pointerdown", this._setSoundEffect.bind(this, false));
 
-    this.volumeMuteButton = this.add
-      .image(assets.scene.width * 1.82, 25, assets.scene.volumeMute)
+    this.soundEffectMuteButton = this.add
+      .image(soundEffectButtonX, 25, assets.scene.volumeMute)
       .setInteractive();
-    this.volumeMuteButton.setDepth(20);
-    this.volumeMuteButton.on("pointerdown", this._turnOnSound.bind(this));
-    this.volumeMuteButton.visible = false;
+    this.soundEffectMuteButton.setDepth(20);
+    this.soundEffectMuteButton.on("pointerdown", this._setSoundEffect.bind(this, true));
+    this.soundEffectMuteButton.visible = false;
+
+    const bgmButtonX = assets.scene.width * 1.57;
+    this.bgmButton = this.add
+      .image(bgmButtonX, 25, assets.scene.volume)
+      .setInteractive();
+    this.bgmButton.setDepth(20);
+    this.bgmButton.on("pointerdown", this._setBgm.bind(this, false));
+
+    this.bgmMuteButton = this.add
+      .image(bgmButtonX, 25, assets.scene.volumeMute)
+      .setInteractive();
+    this.bgmMuteButton.setDepth(20);
+    this.bgmMuteButton.on("pointerdown", this._setBgm.bind(this, true));
+    this.bgmMuteButton.visible = false;
+
+    this.bgm = this.sound.add(assets.audio.bgm);
+    this.bgm.setLoop(true);
+    this.bgm.play();
   }
 
   update(time, delta) {
@@ -344,20 +364,20 @@ class Game extends Phaser.Scene {
     }
   }
 
-  _turnOnSound() {
-    this.isMuted = false;
-    this.volumeButton.visible = true;
-    this.volumeMuteButton.visible = false;
+  _setSoundEffect(enabled) {
+    this.isSoundEffectMuted = !enabled;
+    this.soundEffectButton.visible = enabled;
+    this.soundEffectMuteButton.visible = !enabled;
   }
 
-  _turnOffSound() {
-    this.isMuted = true;
-    this.volumeButton.visible = false;
-    this.volumeMuteButton.visible = true;
+  _setBgm(enabled) {
+    this.isBgmMuted = !enabled;
+    this.bgmButton.visible = enabled;
+    this.bgmMuteButton.visible = !enabled;
   }
 
   _playSound(key) {
-    if (this.isMuted) return;
+    if (this.isSoundEffectMuted) return;
     this.scene.scene.sound.play(key);
   }
 }

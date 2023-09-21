@@ -51,6 +51,7 @@ export const assets = {
     },
   },
   audio: {
+    bgm: "bgm",
     flap: "flap",
     groundHit: "ground-hit",
     pipeHit: "pipe-hit",
@@ -110,4 +111,5 @@ export const preload = (load) => {
   load.audio(assets.audio.pipeHit, "pipe-hit.wav");
   load.audio(assets.audio.ouch, "ouch.wav");
   load.audio(assets.audio.score, "score.wav");
+  load.audio(assets.audio.bgm, "bgm.mp3");
 };
