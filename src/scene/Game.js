@@ -131,6 +131,7 @@ class Game extends Phaser.Scene {
     this.guideText.setDepth(20);
     this.guideText.visible = false;
 
+    // Sound buttons
     const soundEffectButtonX = assets.scene.width * 1.82;
     this.soundEffectButton = this.add
       .image(soundEffectButtonX, 25, assets.scene.volume)
@@ -147,13 +148,13 @@ class Game extends Phaser.Scene {
 
     const bgmButtonX = assets.scene.width * 1.57;
     this.bgmButton = this.add
-      .image(bgmButtonX, 25, assets.scene.volume)
+      .image(bgmButtonX, 25, assets.scene.bgm)
       .setInteractive();
     this.bgmButton.setDepth(20);
     this.bgmButton.on("pointerdown", this._setBgm.bind(this, false));
 
     this.bgmMuteButton = this.add
-      .image(bgmButtonX, 25, assets.scene.volumeMute)
+      .image(bgmButtonX, 25, assets.scene.bgmMute)
       .setInteractive();
     this.bgmMuteButton.setDepth(20);
     this.bgmMuteButton.on("pointerdown", this._setBgm.bind(this, true));
@@ -371,6 +372,12 @@ class Game extends Phaser.Scene {
   }
 
   _setBgm(enabled) {
+    if (enabled) {
+      this.bgm.resume();
+    } else {
+      this.bgm.pause();
+    }
+
     this.isBgmMuted = !enabled;
     this.bgmButton.visible = enabled;
     this.bgmMuteButton.visible = !enabled;
