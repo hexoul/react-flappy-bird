@@ -137,13 +137,19 @@ class Game extends Phaser.Scene {
       .image(soundEffectButtonX, 25, assets.scene.volume)
       .setInteractive();
     this.soundEffectButton.setDepth(20);
-    this.soundEffectButton.on("pointerdown", this._setSoundEffect.bind(this, false));
+    this.soundEffectButton.on(
+      "pointerdown",
+      this._setSoundEffect.bind(this, false)
+    );
 
     this.soundEffectMuteButton = this.add
       .image(soundEffectButtonX, 25, assets.scene.volumeMute)
       .setInteractive();
     this.soundEffectMuteButton.setDepth(20);
-    this.soundEffectMuteButton.on("pointerdown", this._setSoundEffect.bind(this, true));
+    this.soundEffectMuteButton.on(
+      "pointerdown",
+      this._setSoundEffect.bind(this, true)
+    );
     this.soundEffectMuteButton.visible = false;
 
     const bgmButtonX = assets.scene.width * 1.57;
@@ -207,6 +213,7 @@ class Game extends Phaser.Scene {
     this.messageInitial.visible = true;
 
     this.player = this.scene.scene.physics.add.sprite(60, 265, assets.bird);
+    this.player.setDepth(10);
     this.player.setCollideWorldBounds(true);
     this.player.anims.play(assets.animation.bird.clapWings, true);
     this.player.body.allowGravity = false;
@@ -286,6 +293,18 @@ class Game extends Phaser.Scene {
 
     this.player.anims.play(assets.animation.bird.stop);
     this.ground.anims.play(assets.animation.ground.stop);
+    this.scene.scene.tweens
+      .add({
+        targets: this.player,
+        duration: 400,
+        y: 387,
+        onUpdate: () => {
+          if (this.player.angle > 80) return;
+          this.player.angle += 10;
+        },
+        ease: "Back.easeIn",
+      })
+      .play();
 
     this.gameOverBanner.visible = true;
     this.restartButton.visible = true;
