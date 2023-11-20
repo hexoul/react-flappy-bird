@@ -88,7 +88,7 @@ const App = () => {
       fps: { min: fps, target: fps, limit: fps },
       scene: new Game(onGameStart, ping, onGameOver, cookies, setCookie),
     }),
-    [onGameStart, ping, onGameOver, cookies, setCookie]
+    [onGameStart, ping, onGameOver]
   );
 
   useEffect(() => {
