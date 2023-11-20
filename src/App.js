@@ -13,7 +13,7 @@ const mutation = gql`
 `;
 
 const App = () => {
-  const [cookies] = useCookies(["KL_AES", "_klid"]);
+  const [cookies, setCookie] = useCookies(["KL_AES", "_klid", "fb_sound_effect", "fb_bgm"]);
   const game = useRef(null);
 
   const onGameStart = useCallback(() => {
@@ -72,8 +72,6 @@ const App = () => {
     [cookies.KL_AES, cookies._klid]
   );
 
-  const isLoggedIn = !!cookies.KL_AES;
-
   const fps = 30;
   const phaserConfig = useMemo(
     () => ({
@@ -88,9 +86,9 @@ const App = () => {
       },
       render: { pixelArt: true },
       fps: { min: fps, target: fps, limit: fps },
-      scene: new Game(onGameStart, ping, onGameOver, isLoggedIn),
+      scene: new Game(onGameStart, ping, onGameOver, cookies, setCookie),
     }),
-    [onGameStart, ping, onGameOver, isLoggedIn]
+    [onGameStart, ping, onGameOver, cookies, setCookie]
   );
 
   useEffect(() => {

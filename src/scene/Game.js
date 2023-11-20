@@ -7,14 +7,15 @@ class Game extends Phaser.Scene {
   downSpeed = 170;
   scorePt = 42; // Score board padding top
 
-  constructor(onGameStart, ping, onGameOver, isLoggedIn) {
+  constructor(onGameStart, ping, onGameOver, cookies, setCookie) {
     super({ key: "FlappyBirdScene" });
     this.onGameStart = onGameStart;
     this.ping = ping;
     this.onGameOver = onGameOver;
-    this.isLoggedIn = isLoggedIn;
-    this.isSoundEffectMuted = false;
-    this.isBgmMuted = false;
+    this.isLoggedIn = !!cookies.KL_AES;
+    this.isSoundEffectMuted = cookies.fb_sound_effect === "false";
+    this.isBgmMuted = cookies.fb_bgm === "false";
+    this.setCookie = setCookie;
   }
 
   preload() {
@@ -141,6 +142,7 @@ class Game extends Phaser.Scene {
       "pointerdown",
       this._setSoundEffect.bind(this, false)
     );
+    this.soundEffectButton.visible = !this.isSoundEffectMuted;
 
     this.soundEffectMuteButton = this.add
       .image(soundEffectButtonX, 25, assets.scene.volumeMute)
@@ -150,7 +152,7 @@ class Game extends Phaser.Scene {
       "pointerdown",
       this._setSoundEffect.bind(this, true)
     );
-    this.soundEffectMuteButton.visible = false;
+    this.soundEffectMuteButton.visible = this.isSoundEffectMuted;
 
     const bgmButtonX = assets.scene.width * 1.57;
     this.bgmButton = this.add
@@ -158,17 +160,19 @@ class Game extends Phaser.Scene {
       .setInteractive();
     this.bgmButton.setDepth(20);
     this.bgmButton.on("pointerdown", this._setBgm.bind(this, false));
+    this.bgmButton.visible = !this.isBgmMuted;
 
     this.bgmMuteButton = this.add
       .image(bgmButtonX, 25, assets.scene.bgmMute)
       .setInteractive();
     this.bgmMuteButton.setDepth(20);
     this.bgmMuteButton.on("pointerdown", this._setBgm.bind(this, true));
-    this.bgmMuteButton.visible = false;
+    this.bgmMuteButton.visible = this.isBgmMuted;
 
     this.bgm = this.sound.add(assets.audio.bgm);
     this.bgm.setLoop(true);
     this.bgm.play();
+    if (this.isBgmMuted) this.bgm.pause();
   }
 
   update(time, delta) {
@@ -385,6 +389,7 @@ class Game extends Phaser.Scene {
   }
 
   _setSoundEffect(enabled) {
+    this.setCookie("fb_sound_effect", enabled);
     this.isSoundEffectMuted = !enabled;
     this.soundEffectButton.visible = enabled;
     this.soundEffectMuteButton.visible = !enabled;
@@ -397,6 +402,7 @@ class Game extends Phaser.Scene {
       this.bgm.pause();
     }
 
+    this.setCookie("fb_bgm", enabled);
     this.isBgmMuted = !enabled;
     this.bgmButton.visible = enabled;
     this.bgmMuteButton.visible = !enabled;
