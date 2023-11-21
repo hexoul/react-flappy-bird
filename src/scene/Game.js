@@ -13,8 +13,8 @@ class Game extends Phaser.Scene {
     this.ping = ping;
     this.onGameOver = onGameOver;
     this.isLoggedIn = !!cookies.KL_AES;
-    this.isSoundEffectMuted = cookies.fb_sound_effect === "false";
-    this.isBgmMuted = cookies.fb_bgm === "false";
+    this.isSoundEffectMuted = cookies.fb_sound_effect === "false" || localStorage.getItem("fb_sound_effect") === "false";
+    this.isBgmMuted = cookies.fb_bgm === "false" || localStorage.getItem("fb_bgm") === "false";
     this.setCookie = setCookie;
   }
 
@@ -389,6 +389,7 @@ class Game extends Phaser.Scene {
   }
 
   _setSoundEffect(enabled) {
+    localStorage.setItem("fb_sound_effect", enabled);
     this.setCookie("fb_sound_effect", enabled);
     this.isSoundEffectMuted = !enabled;
     this.soundEffectButton.visible = enabled;
@@ -402,6 +403,7 @@ class Game extends Phaser.Scene {
       this.bgm.pause();
     }
 
+    localStorage.setItem("fb_bgm", enabled);
     this.setCookie("fb_bgm", enabled);
     this.isBgmMuted = !enabled;
     this.bgmButton.visible = enabled;
